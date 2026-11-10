@@ -2,6 +2,10 @@
 
 Prototype rougelike extraction shooter esque game, kind of an upgrade of the prior 2d one. The idea is an extraction shooter but its procedually generated. You get resources and stuff exploring the levels and go to the next and every few levels there will be a bossfight until the end.
 
+This is made for hack club's Terra, if like by the end of this I actually quite like the game I might actually do something with it (hopefully).
+
+I just generally though the 2D game didnt really have potentual to be what I want both visually but also gameplay wise (or maybe im incompetant at coming up with good gameplay ideas).
+
 ## Plans for procedual generation
 
 I want to make a not tilemap based world with corredors and rooms which is mostly linear with a start and end. 
