@@ -51,8 +51,6 @@ impl IRigidBody3D for Player {
 
         b.apply_central_force((velocity_error * response * mass).limit_length(Some(max_force)));
     }
-
-    // fn unhandled_input(&mut self, event: Gd<InputEvent>) {}
 }
 
 #[godot_api]

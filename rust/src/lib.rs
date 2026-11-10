@@ -1,4 +1,3 @@
-mod camera;
 mod player;
 
 use godot::prelude::*;
