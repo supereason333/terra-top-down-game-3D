@@ -1,9 +1,72 @@
 [gd_scene format=3 uid="uid://2km7a1r5ysnu"]
 
-[ext_resource type="Texture2D" uid="uid://b480b0obvdf60" path="res://icon.svg" id="1_f3sb7"]
+[ext_resource type="PackedScene" uid="uid://bg87yghi7c2y1" path="res://player.tscn" id="1_f3sb7"]
 
-[node name="World" type="Node2D" unique_id=2027323039]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gv5m4"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=669745742]
-position = Vector2(533, 320)
-texture = ExtResource("1_f3sb7")
+[sub_resource type="Sky" id="Sky_f3sb7"]
+sky_material = SubResource("ProceduralSkyMaterial_gv5m4")
+
+[sub_resource type="Environment" id="Environment_fj7yv"]
+background_energy_multiplier = 0.0
+sky = SubResource("Sky_f3sb7")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f3sb7"]
+noise_type = 3
+metadata/_preview_in_3d_space_ = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fj7yv"]
+width = 200
+height = 200
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_f3sb7")
+normalize = false
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f3sb7"]
+width = 200
+height = 200
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_f3sb7")
+as_normal_map = true
+normalize = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tlwt5"]
+albedo_texture = SubResource("NoiseTexture2D_fj7yv")
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_f3sb7")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_gv5m4"]
+material = SubResource("StandardMaterial3D_tlwt5")
+size = Vector2(10, 10)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_f3sb7"]
+
+[node name="World" type="Node3D" unique_id=93226633]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=728702469]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=361175940]
+environment = SubResource("Environment_fj7yv")
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=507683709]
+mesh = SubResource("PlaneMesh_gv5m4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1222630873]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=518931591]
+shape = SubResource("WorldBoundaryShape3D_f3sb7")
+
+[node name="FollowCamera" type="FollowCamera" parent="." unique_id=1366804702 node_paths=PackedStringArray("target")]
+target = NodePath("../Player")
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.2249007, 0)
+size = 8.944
+
+[node name="Player" parent="." unique_id=1046229950 instance=ExtResource("1_f3sb7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9189296, 0)
