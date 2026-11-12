@@ -1,3 +1,3 @@
-mod camera;
-mod mouse_tracker;
-mod player;
+mod camera_node;
+mod mouse_tracker_node;
+mod player_node;
