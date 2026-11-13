@@ -2,12 +2,10 @@ mod item;
 
 use std::collections::HashMap;
 
+use godot::classes::Node3D;
 use godot::obj::Bounds;
 use godot::obj::bounds::DeclUser;
-use godot::{
-    classes::{Node3D, class_macros::private::virtuals::Node3D},
-    prelude::*,
-};
+use godot::prelude::*;
 
 use crate::inventory_system::item::ItemInstance;
 
@@ -16,6 +14,7 @@ pub enum ItemLibraryErr {
     InitilizeError,
     NoSuchItem,
     NoScene,
+    WrongNodeType,
 }
 
 #[derive(GodotClass)]
@@ -69,28 +68,28 @@ pub impl ItemLibrary {
         }
     }
 
-    pub fn get_item_node<N, I>(
+    pub fn get_item_node<I>(
         &self,
         id: &StringName,
-        instance: Gd<ItemInstanceResource>,
-    ) -> Result<Gd<N>, ItemLibraryErr>
+        instance: I,
+    ) -> Result<Gd<I::Node>, ItemLibraryErr>
     where
-        N: ItemInstance,
-        N: GodotClass,
-        N: Inherits<Node3D>,
-        N: Bounds<Declarer = DeclUser>,
+        I: ItemInstanceData,
     {
-        let item = match self.get_item(id) {
-            Some(item) => item,
-            None => return Err(ItemLibraryErr::NoSuchItem),
-        };
+        let item = self.get_item(id).ok_or(ItemLibraryErr::NoSuchItem)?;
 
-        let mut node: Gd<N> = match item.bind().item_scene.clone() {
-            Some(scene) => scene.instantiate_as::<Node3D>().cast::<N>(),
-            None => return Err(ItemLibraryErr::NoScene),
-        };
+        let scene = item
+            .bind()
+            .item_scene
+            .clone()
+            .ok_or(ItemLibraryErr::NoScene)?;
 
-        node.bind_mut().set_instance(instance);
+        let node = scene
+            .instantiate_as::<Node3D>()
+            .try_cast::<I::Node>()
+            .map_err(|_| ItemLibraryErr::WrongNodeType)?;
+
+        instance.load_into_item(node.clone());
 
         Ok(node)
     }
@@ -106,8 +105,6 @@ pub struct ItemDefinitionResource {
     id: StringName,
     #[export]
     pub item_scene: Option<Gd<PackedScene>>,
-    #[export]
-    default_instance_resource: Option<Gd<ItemInstanceResource>>,
     base: Base<Resource>,
 }
 
@@ -119,13 +116,35 @@ impl IResource for ItemDefinitionResource {
 impl ItemDefinitionResource {}
 
 // every item has one of these
-#[derive(GodotClass)]
-#[class(tool, init, base=Resource)]
-pub struct ItemInstanceResource {
-    base: Base<Resource>,
-}
 
-#[godot_api]
-impl IResource for ItemInstanceResource {
+pub trait ItemInstanceData: Sized {
+    type ItemNode: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
+
+    // constructor for default data
+    fn new() -> Self;
+
+    // constructs from an item's data
+    fn new_from_item(item: Gd<Self::ItemNode>) -> Option<Self>;
+
+    // when item is equipped, load data into item
+    fn load_into_item(&self, item: Gd<Self::ItemNode>);
+
+    // when item is unequipped, take data from item
+    fn take_from_item(&mut self, item: Gd<Self::ItemNode>);
+
+    //     // constructs from an item's data
+    //     fn new_from_item<N>(item: Gd<N>) -> Option<Self>
+    //     where
+    //         Self: Sized,
+    //         N: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
     //
+    //     // when item is equipped, load data into item
+    //     fn load_into_item<N>(&self, item: Gd<N>)
+    //     where
+    //         N: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
+    //
+    //     // when item is unequipped, take data from item
+    //     fn take_from_item<N>(&mut self, item: Gd<N>)
+    //     where
+    //         N: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
 }
