@@ -1,6 +1,7 @@
 mod item;
 
 use std::collections::HashMap;
+use std::str::FromStr;
 
 use godot::classes::Node3D;
 use godot::obj::Bounds;
@@ -46,16 +47,20 @@ impl IResource for ItemLibrary {
 #[godot_api]
 pub impl ItemLibrary {
     /// initilises the library, checks for errors and such
-    pub fn initilize(&mut self) -> Result<(), ItemLibraryErr> {
-        let seen: HashMap<StringName, ()> = HashMap::new();
+    pub fn initialize(&mut self) -> Result<(), ItemLibraryErr> {
         for item in self.lib.iter_shared() {
             let id = item.bind().id.clone();
-            if seen.get(&id) == Some(&()) {
-                godot_error!("Two items share the same name! {id}");
+            if self.lookup.get(&id).is_some() {
+                godot_print!("Two items share the same name! {id}");
                 continue;
             }
             self.lookup.insert(id, item);
         }
+
+        let registered = self.lookup.len();
+        let total = self.lib.len();
+
+        godot_print!("Registered {registered} items out of {total}");
 
         self.initilized = true;
         Ok(())
@@ -68,15 +73,13 @@ pub impl ItemLibrary {
         }
     }
 
-    pub fn get_item_node<I>(
-        &self,
-        id: &StringName,
-        instance: I,
-    ) -> Result<Gd<I::Node>, ItemLibraryErr>
+    pub fn get_item_node<I>(&self, instance: I) -> Result<Gd<I::ItemNode>, ItemLibraryErr>
     where
         I: ItemInstanceData,
     {
-        let item = self.get_item(id).ok_or(ItemLibraryErr::NoSuchItem)?;
+        let item = self
+            .get_item(&I::get_id())
+            .ok_or(ItemLibraryErr::NoSuchItem)?;
 
         let scene = item
             .bind()
@@ -86,7 +89,7 @@ pub impl ItemLibrary {
 
         let node = scene
             .instantiate_as::<Node3D>()
-            .try_cast::<I::Node>()
+            .try_cast::<I::ItemNode>()
             .map_err(|_| ItemLibraryErr::WrongNodeType)?;
 
         instance.load_into_item(node.clone());
@@ -116,15 +119,16 @@ impl IResource for ItemDefinitionResource {
 impl ItemDefinitionResource {}
 
 // every item has one of these
-
+// is the actual item data thats stored
 pub trait ItemInstanceData: Sized {
     type ItemNode: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
+    const ITEM_ID: &str;
 
     // constructor for default data
     fn new() -> Self;
 
     // constructs from an item's data
-    fn new_from_item(item: Gd<Self::ItemNode>) -> Option<Self>;
+    fn new_from_item(item: Gd<Self::ItemNode>) -> Self;
 
     // when item is equipped, load data into item
     fn load_into_item(&self, item: Gd<Self::ItemNode>);
@@ -132,19 +136,13 @@ pub trait ItemInstanceData: Sized {
     // when item is unequipped, take data from item
     fn take_from_item(&mut self, item: Gd<Self::ItemNode>);
 
-    //     // constructs from an item's data
-    //     fn new_from_item<N>(item: Gd<N>) -> Option<Self>
-    //     where
-    //         Self: Sized,
-    //         N: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
-    //
-    //     // when item is equipped, load data into item
-    //     fn load_into_item<N>(&self, item: Gd<N>)
-    //     where
-    //         N: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
-    //
-    //     // when item is unequipped, take data from item
-    //     fn take_from_item<N>(&mut self, item: Gd<N>)
-    //     where
-    //         N: GodotClass + ItemInstance + Inherits<Node3D> + Bounds<Declarer = DeclUser>;
+    // name says it all (gets the item id)
+    fn get_id() -> StringName {
+        StringName::from_str(Self::ITEM_ID).unwrap()
+    }
+
+    // idk
+    // fn try_id() -> Result<StringName, ()> {
+    //     StringName::from_str(Self::ITEM_ID).map_err(|_| ())
+    // }
 }

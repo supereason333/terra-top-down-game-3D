@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use godot::prelude::*;
 
 use crate::inventory_system::ItemInstanceData;
@@ -36,18 +38,26 @@ struct TestItemInstanceData {
 
 impl ItemInstanceData for TestItemInstanceData {
     type ItemNode = TestItem3D;
+    const ITEM_ID: &str = "test_item";
 
     fn new() -> Self {
         Self { counter: 0 }
     }
 
-    fn new_from_item(item: Gd<Self::ItemNode>) -> Option<Self> {
-        None
+    fn new_from_item(item: Gd<Self::ItemNode>) -> Self {
+        let ins = item.bind();
+        Self {
+            counter: ins.counter,
+        }
     }
 
-    fn load_into_item(&self, item: Gd<Self::ItemNode>) {
-        // ite
+    fn load_into_item(&self, mut item: Gd<Self::ItemNode>) {
+        let mut ins = item.bind_mut();
+        ins.counter = self.counter;
     }
 
-    fn take_from_item(&mut self, item: Gd<Self::ItemNode>) {}
+    fn take_from_item(&mut self, item: Gd<Self::ItemNode>) {
+        let ins = item.bind();
+        self.counter = ins.counter;
+    }
 }
