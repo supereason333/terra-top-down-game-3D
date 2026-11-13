@@ -1,4 +1,4 @@
-mod item;
+pub mod item;
 
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -73,7 +73,7 @@ pub impl ItemLibrary {
         }
     }
 
-    pub fn get_item_node<I>(&self, instance: I) -> Result<Gd<I::ItemNode>, ItemLibraryErr>
+    pub fn get_item_node<I>(&self, ins_data: &I) -> Result<Gd<I::ItemNode>, ItemLibraryErr>
     where
         I: ItemInstanceData,
     {
@@ -92,7 +92,7 @@ pub impl ItemLibrary {
             .try_cast::<I::ItemNode>()
             .map_err(|_| ItemLibraryErr::WrongNodeType)?;
 
-        instance.load_into_item(node.clone());
+        ins_data.load_into_item(node.clone());
 
         Ok(node)
     }

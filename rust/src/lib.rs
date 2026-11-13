@@ -53,7 +53,7 @@ impl GlobalSingleton {
         self.item_lib = item_lib;
     }
 
-    fn get_item_lib(&mut self) -> Option<Gd<ItemLibrary>> {
+    pub fn get_item_lib(&mut self) -> Option<Gd<ItemLibrary>> {
         if !self.initialized {
             self.initialize();
         }

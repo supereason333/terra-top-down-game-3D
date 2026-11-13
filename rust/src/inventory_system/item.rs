@@ -8,7 +8,7 @@ pub trait ItemInstance {}
 
 #[derive(GodotClass)]
 #[class(base=Node3D)]
-struct TestItem3D {
+pub struct TestItem3D {
     counter: i32,
 
     base: Base<Node3D>,
@@ -32,7 +32,7 @@ impl TestItem3D {
     }
 }
 
-struct TestItemInstanceData {
+pub struct TestItemInstanceData {
     counter: i32,
 }
 
