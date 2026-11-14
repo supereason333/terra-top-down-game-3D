@@ -8,7 +8,7 @@ use godot::obj::Bounds;
 use godot::obj::bounds::DeclUser;
 use godot::prelude::*;
 
-use crate::inventory_system::item::{ItemInstance, TestItemInstanceData};
+use crate::inventory_system::item::{BasicGunInstanceData, ItemInstance, TestItemInstanceData};
 
 type Factory = fn() -> Box<dyn ItemInstanceDataObject>;
 
@@ -73,6 +73,8 @@ impl ItemLibrary {
 
         let data_registered = self.data_registry.factories.len();
 
+        godot_print!("Registered {data_registered} data factories");
+
         if data_registered > registered {
             let dif = data_registered - registered;
             godot_print!("{dif} items not registered");
@@ -122,7 +124,7 @@ impl ItemLibrary {
             .clone()
             .ok_or(ItemLibraryErr::NoScene)?;
 
-        let mut node = scene.instantiate_as::<Node3D>();
+        let node = scene.instantiate_as::<Node3D>();
 
         if let Err(e) = ins_data.load_into(node.clone()) {
             node.free();
@@ -159,6 +161,7 @@ impl ItemDataRegistry {
 // registers all itmes, DONT FORGET: ADD HERE AFTER ADDING TO GODOT LIBRARY
 fn register_all(reg: &mut ItemDataRegistry) {
     reg.register::<TestItemInstanceData>();
+    reg.register::<BasicGunInstanceData>();
 }
 
 // used in library

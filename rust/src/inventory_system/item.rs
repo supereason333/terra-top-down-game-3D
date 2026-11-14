@@ -72,3 +72,63 @@ impl ItemInstanceData for TestItemInstanceData {
         self.counter = ins.counter;
     }
 }
+
+#[derive(GodotClass)]
+#[class(base=Node3D)]
+pub struct BasicGun3D {
+    counter: i32,
+
+    base: Base<Node3D>,
+}
+
+#[godot_api]
+impl INode3D for BasicGun3D {
+    fn init(base: Base<Node3D>) -> Self {
+        Self {
+            counter: 1,
+            base: base,
+        }
+    }
+
+    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
+            if event.is_pressed() {
+                godot_print!("Shoot");
+            }
+        }
+    }
+}
+
+impl ItemInstance for BasicGun3D {}
+
+impl BasicGun3D {}
+
+pub struct BasicGunInstanceData {
+    counter: i32,
+}
+
+impl ItemInstanceData for BasicGunInstanceData {
+    type ItemNode = BasicGun3D;
+    const ITEM_ID: &str = "basic_gun";
+
+    fn new() -> Self {
+        Self { counter: 0 }
+    }
+
+    fn new_from_item(item: Gd<Self::ItemNode>) -> Self {
+        let ins = item.bind();
+        Self {
+            counter: ins.counter,
+        }
+    }
+
+    fn load_into_item(&self, mut item: Gd<Self::ItemNode>) {
+        let mut ins = item.bind_mut();
+        ins.counter = self.counter;
+    }
+
+    fn take_from_item(&mut self, item: Gd<Self::ItemNode>) {
+        let ins = item.bind();
+        self.counter = ins.counter;
+    }
+}
