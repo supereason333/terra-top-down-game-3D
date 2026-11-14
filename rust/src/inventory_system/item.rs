@@ -1,6 +1,9 @@
 use std::str::FromStr;
 
-use godot::prelude::*;
+use godot::{
+    classes::{InputEvent, InputEventMouseButton},
+    prelude::*,
+};
 
 use crate::inventory_system::ItemInstanceData;
 
@@ -20,6 +23,14 @@ impl INode3D for TestItem3D {
         Self {
             counter: 1,
             base: base,
+        }
+    }
+
+    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
+            if event.is_pressed() {
+                godot_print!("Pressed");
+            }
         }
     }
 }

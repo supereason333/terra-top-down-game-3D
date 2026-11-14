@@ -34,7 +34,7 @@ impl GlobalSingleton {
     #[func]
     fn initialize(&mut self) {
         let mut loader = ResourceLoader::singleton();
-        let item_lib = match loader.load("uid://cmcdckh6bp5vg") {
+        let item_lib = match loader.load("uid://jcn0k3nn4nnn") {
             Some(lib) => {
                 godot_print!("initializing item library");
                 let mut lib = lib.cast::<ItemLibrary>();
