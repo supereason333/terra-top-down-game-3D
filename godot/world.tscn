@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://2km7a1r5ysnu"]
 
 [ext_resource type="PackedScene" uid="uid://bg87yghi7c2y1" path="res://player.tscn" id="1_f3sb7"]
+[ext_resource type="PackedScene" uid="uid://ccpccyn7xr25n" path="res://projectiles/test_projectile.tscn" id="2_fj7yv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gv5m4"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -12,8 +13,10 @@ sky_material = SubResource("ProceduralSkyMaterial_gv5m4")
 [sub_resource type="Environment" id="Environment_fj7yv"]
 background_energy_multiplier = 0.0
 sky = SubResource("Sky_f3sb7")
-tonemap_mode = 2
+ssao_enabled = true
 glow_enabled = true
+fog_light_energy = 0.0
+fog_density = 0.1357
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_f3sb7"]
 noise_type = 3
@@ -93,11 +96,13 @@ transform = Transform3D(1, -1.4901161e-08, -1.4901161e-08, -1.4901161e-08, 1, -2
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 light_energy = 0.5
 shadow_enabled = true
+editor_only = true
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="." unique_id=951171506]
 transform = Transform3D(0.80049086, 0.51904804, -0.2996725, 2.7805946e-08, 0.49999994, 0.86602545, 0.599345, -0.6932454, 0.40024534, 0, 0, 0)
 light_energy = 0.5
 shadow_enabled = true
+editor_only = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=361175940]
 environment = SubResource("Environment_fj7yv")
@@ -113,60 +118,73 @@ shape = SubResource("WorldBoundaryShape3D_f3sb7")
 
 [node name="FollowCamera" type="FollowCamera" parent="." unique_id=1366804702 node_paths=PackedStringArray("target")]
 target = NodePath("../Player")
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.2249007, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.882366, 0)
 current = true
 size = 8.944
 
 [node name="Player" parent="." unique_id=1046229950 instance=ExtResource("1_f3sb7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9189296, 0)
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0.9189296, 0)
 
 [node name="Walls" type="Node3D" parent="." unique_id=2019762300]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Walls" unique_id=277368217]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -2)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Walls" unique_id=1118016213]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -5, 1.5, -3)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Walls" unique_id=1586425509]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -5, 1.5, 4)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="Walls" unique_id=1574416073]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 1.5, 7)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D6" type="MeshInstance3D" parent="Walls" unique_id=140906740]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 7, 1.5, 8)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D8" type="MeshInstance3D" parent="Walls" unique_id=570416283]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 15, 1.5, 10)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D9" type="MeshInstance3D" parent="Walls" unique_id=262537936]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 12, 1.5, 17)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D10" type="MeshInstance3D" parent="Walls" unique_id=373746849]
 transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -9, 1.5, 8)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D11" type="MeshInstance3D" parent="Walls" unique_id=1109571684]
 transform = Transform3D(-2.1855695e-07, 0, -1, 0, 1, 0, 1, 0, -2.1855695e-07, -12, 1.5, 1)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D7" type="MeshInstance3D" parent="Walls" unique_id=2062156212]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5, 1.5, 12)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Walls" unique_id=1322161463]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 1.5, 3)
 mesh = SubResource("BoxMesh_f3sb7")
+metadata/_edit_lock_ = true
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Walls" unique_id=1033534189]
+visible = false
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Walls/StaticBody3D" unique_id=1981009715]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -2)
@@ -211,3 +229,12 @@ shape = SubResource("ConvexPolygonShape3D_wse8f")
 [node name="CollisionShape3D11" type="CollisionShape3D" parent="Walls/StaticBody3D" unique_id=694905953]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 1.5, 3)
 shape = SubResource("ConvexPolygonShape3D_ic0uy")
+
+[node name="TestProjectile" parent="." unique_id=490768273 instance=ExtResource("2_fj7yv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4181237, 0.13072348, -1.1950412)
+
+[node name="OmniLight3D" parent="TestProjectile" index="2" unique_id=2090592427]
+light_energy = 0.03
+omni_range = 1.3503293
+
+[editable path="TestProjectile"]
