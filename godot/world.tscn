@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://2km7a1r5ysnu"]
 
 [ext_resource type="PackedScene" uid="uid://bg87yghi7c2y1" path="res://player.tscn" id="1_f3sb7"]
-[ext_resource type="PackedScene" uid="uid://ccpccyn7xr25n" path="res://projectiles/test_projectile.tscn" id="2_fj7yv"]
+[ext_resource type="PackedScene" uid="uid://cyxpv3edrafpr" path="res://entities/basic_enemy.tscn" id="2_fj7yv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gv5m4"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -230,11 +230,5 @@ shape = SubResource("ConvexPolygonShape3D_wse8f")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 1.5, 3)
 shape = SubResource("ConvexPolygonShape3D_ic0uy")
 
-[node name="TestProjectile" parent="." unique_id=490768273 instance=ExtResource("2_fj7yv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4181237, 0.13072348, -1.1950412)
-
-[node name="OmniLight3D" parent="TestProjectile" index="2" unique_id=2090592427]
-light_energy = 0.03
-omni_range = 1.3503293
-
-[editable path="TestProjectile"]
+[node name="BasicEnemy" parent="." unique_id=217054001 instance=ExtResource("2_fj7yv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5973172, 2.7486377, 1.9233043)

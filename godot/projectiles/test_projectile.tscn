@@ -2,6 +2,7 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brone"]
 albedo_color = Color(3.6813388, 0, 0, 1)
+disable_receive_shadows = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_irucm"]
 material = SubResource("StandardMaterial3D_brone")
@@ -14,6 +15,7 @@ points = PackedVector3Array(0.01, 0.01, 0.2, 0.01, -0.01, 0.2, 0.01, 0.01, -0.2,
 velocity = 10.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=900346683]
+cast_shadow = 0
 mesh = SubResource("BoxMesh_irucm")
 
 [node name="DetectArea" type="Area3D" parent="." unique_id=1394182494]

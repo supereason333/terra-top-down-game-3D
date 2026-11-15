@@ -1,9 +1,12 @@
 use godot::classes::{IRigidBody3D, Input, RigidBody3D};
 use godot::prelude::*;
 
+use crate::GlobalSingleton;
+use crate::other_stuff::health_node::HealthNode;
+
 #[derive(GodotClass)]
 #[class(base=RigidBody3D)]
-struct Player {
+pub struct Player {
     #[export]
     walk_speed: f32,
     #[export]
@@ -12,6 +15,10 @@ struct Player {
     response: f32,
     #[export]
     max_force: f32,
+
+    #[export]
+    health_node: Option<Gd<HealthNode>>,
+
     base: Base<RigidBody3D>,
 }
 
@@ -23,8 +30,18 @@ impl IRigidBody3D for Player {
             run_speed: 3.0,
             response: 50.0,
             max_force: 100.0,
+
+            health_node: None,
+
             base,
         }
+    }
+
+    fn ready(&mut self) {
+        let mut global = GlobalSingleton::singleton();
+        global
+            .bind_mut()
+            .set_player_node(self.base().clone().cast::<Player>());
     }
 
     fn physics_process(&mut self, _dt: f64) {
@@ -55,11 +72,16 @@ impl IRigidBody3D for Player {
 
 #[godot_api]
 impl Player {
-    #[func]
-    fn increase_speed(&mut self, _amount: f64) {
-        self.signals().speed_increased().emit();
+    fn get_health(&mut self) -> Option<Gd<HealthNode>> {
+        match self.health_node.clone() {
+            Some(node) => {
+                if node.is_instance_valid() {
+                    Some(node)
+                } else {
+                    None
+                }
+            }
+            None => None,
+        }
     }
-
-    #[signal]
-    fn speed_increased();
 }

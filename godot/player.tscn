@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bg87yghi7c2y1"]
 
 [ext_resource type="Script" uid="uid://cra6soyfpou8f" path="res://player_rotate.gd" id="1_4flbx"]
+[ext_resource type="PhysicsMaterial" uid="uid://doxejei7sgfb4" path="res://physics_material.tres" id="1_onrkg"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gv5m4"]
 points = PackedVector3Array(0.14777806, 0.8409641, 0.03924773, 0.21285433, -0.7428124, 0.15570588, -0.15851548, 0.71417385, 0.21285433, -0.10141458, 0.71417385, -0.2442857, 0.15570588, -0.71417385, -0.21571147, 0.21285433, 0.71417385, -0.15851548, -0.15851548, -0.71417385, 0.21285433, 0.15570588, 0.7428124, 0.21285433, -0.2442857, 0.71417385, -0.10141458, -0.15851548, -0.71417385, -0.21571147, -0.09694778, -0.8734407, -0.04230698, -0.21571147, -0.71417385, 0.15570588, 0.15570588, -0.7428124, 0.21285433, 0.21285433, 0.7428124, 0.15570588, 0.21285433, -0.71417385, -0.15851548, -0.09694785, 0.8734413, -0.042307008, 0.15570588, 0.71417385, -0.21571147, -0.21571147, 0.71417385, 0.15570588, -0.2442857, -0.71417385, -0.10141458, -0.10141458, -0.71417385, -0.2442857, 0.09427349, -0.8751128, 0.039573595, -0.04236048, 0.87458384, 0.09421565, -0.21571147, 0.71417385, -0.15851548, 0.03951883, 0.87394387, -0.09700281, -0.042032313, -0.8403966, 0.14767738, 0.039518856, -0.87394446, -0.09700287, 0.063232705, 0.6983642, 0.21847144, 0.21847144, -0.6983642, 0.063232705, -0.065934315, -0.6966843, 0.21794248, 0.21794248, 0.6966843, -0.065934315, -0.15851548, 0.71417385, -0.21571147, -0.21571147, -0.71417385, -0.15851548)
@@ -12,14 +13,22 @@ height = 1.8
 [sub_resource type="BoxMesh" id="BoxMesh_4flbx"]
 size = Vector3(0.3, 0.3, 0.3)
 
-[node name="Player" type="Player" unique_id=1584991834]
+[node name="Player" type="Player" unique_id=1584991834 node_paths=PackedStringArray("health_node")]
 response = 30.0
-max_force = 40.0
+max_force = 400.0
+health_node = NodePath("HealthNode")
+collision_layer = 3
 axis_lock_linear_y = true
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+mass = 70.0
+physics_material_override = ExtResource("1_onrkg")
 can_sleep = false
+
+[node name="HealthNode" type="HealthNode" parent="." unique_id=1158287055]
+health = 100.0
+max_health = 100.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1115814440]
 shape = SubResource("ConvexPolygonShape3D_gv5m4")
@@ -40,6 +49,7 @@ item = &"basic_gun"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3495109)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="PlayerRotate" unique_id=1675890331]
+transform = Transform3D(1, 0, 0, 0, 0.9750177, 0.22212712, 0, -0.22212712, 0.9750177, 0, 0.61452174, 0)
 light_color = Color(1, 1, 0.9882353, 1)
 light_energy = 0.563
 shadow_enabled = true

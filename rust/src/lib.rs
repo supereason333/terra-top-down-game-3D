@@ -1,4 +1,6 @@
+mod entities;
 mod inventory_system;
+mod other_stuff;
 mod player;
 mod projectile_system;
 mod world;
@@ -7,6 +9,7 @@ use godot::{classes::ResourceLoader, prelude::*};
 
 use crate::{
     inventory_system::ItemLibrary,
+    player::player_node::Player,
     projectile_system::ProjectileLibrary,
     world::world_node::{ProjectilesNode, WorldNode},
 };
@@ -28,6 +31,7 @@ struct GlobalSingleton {
 
     world_node: Option<Gd<WorldNode>>,
     projectiles_node: Option<Gd<ProjectilesNode>>,
+    player_node: Option<Gd<Player>>,
 
     base: Base<Object>,
 }
@@ -41,6 +45,7 @@ impl IObject for GlobalSingleton {
             projectile_lib: None,
             world_node: None,
             projectiles_node: None,
+            player_node: None,
             base: base,
         }
     }
@@ -112,7 +117,7 @@ impl GlobalSingleton {
         }
     }
 
-    pub fn set_world_node(&mut self, mut world: Gd<WorldNode>) {
+    pub fn set_world_node(&mut self, world: Gd<WorldNode>) {
         world
             .clone()
             .upcast::<Node>()
@@ -139,7 +144,7 @@ impl GlobalSingleton {
         }
     }
 
-    pub fn set_projectiles_node(&mut self, mut node: Gd<ProjectilesNode>) {
+    pub fn set_projectiles_node(&mut self, node: Gd<ProjectilesNode>) {
         node.clone()
             .upcast::<Node>()
             .signals()
@@ -154,6 +159,32 @@ impl GlobalSingleton {
 
     pub fn get_projectiles_node(&mut self) -> Option<Gd<ProjectilesNode>> {
         match self.projectiles_node.clone() {
+            Some(node) => {
+                if node.is_instance_valid() {
+                    Some(node)
+                } else {
+                    None
+                }
+            }
+            None => None,
+        }
+    }
+
+    pub fn set_player_node(&mut self, node: Gd<Player>) {
+        node.clone()
+            .upcast::<Node>()
+            .signals()
+            .tree_exited()
+            .connect_other(self, Self::erase_world_node);
+        self.player_node = Some(node);
+    }
+
+    pub fn erase_player_node(&mut self) {
+        self.player_node = None;
+    }
+
+    pub fn get_player_node(&mut self) -> Option<Gd<Player>> {
+        match self.player_node.clone() {
             Some(node) => {
                 if node.is_instance_valid() {
                     Some(node)
