@@ -1,3 +1,5 @@
+mod projectiles;
+
 use std::collections::HashMap;
 
 use godot::prelude::*;
@@ -54,16 +56,19 @@ impl ProjectileLibrary {
         Ok(())
     }
 
-    pub fn get_item(&self, id: &StringName) -> Option<Gd<ProjectileDefinitionResource>> {
+    pub fn get_projectile(&self, id: &StringName) -> Option<Gd<ProjectileDefinitionResource>> {
         match self.lookup.get(id) {
             Some(item) => Some(item.clone()),
             None => None,
         }
     }
 
-    pub fn get_item_node(&self, id: &StringName) -> Result<Gd<Node3D>, ProjectileLibraryErr> {
+    pub fn get_projectile_node(
+        &self,
+        id: &StringName,
+    ) -> Result<(Gd<Node3D>, Gd<ProjectileDefinitionResource>), ProjectileLibraryErr> {
         let item = self
-            .get_item(id)
+            .get_projectile(id)
             .ok_or(ProjectileLibraryErr::NoSuchProjectile)?;
 
         let scene = item
@@ -74,7 +79,7 @@ impl ProjectileLibrary {
 
         let node = scene.instantiate_as::<Node3D>();
 
-        Ok(node)
+        Ok((node, item))
     }
 }
 
@@ -82,10 +87,18 @@ impl ProjectileLibrary {
 #[class(tool, init, base=Resource)]
 pub struct ProjectileDefinitionResource {
     #[export]
+    lifetime: f32,
+    #[export]
     display_name: GString,
     #[export]
     id: StringName,
     #[export]
     pub item_scene: Option<Gd<PackedScene>>,
     base: Base<Resource>,
+}
+
+impl ProjectileDefinitionResource {
+    pub fn _get_lifetime(&self) -> f32 {
+        self.lifetime
+    }
 }

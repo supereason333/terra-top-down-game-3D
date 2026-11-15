@@ -112,7 +112,7 @@ impl ItemLibrary {
     pub fn get_item_node(
         &self,
         ins_data: &dyn ItemInstanceDataObject,
-    ) -> Result<Gd<Node3D>, ItemLibraryErr> {
+    ) -> Result<(Gd<Node3D>, Gd<ItemDefinitionResource>), ItemLibraryErr> {
         let item = self
             .get_item(&StringName::from(ins_data.item_id()))
             .ok_or(ItemLibraryErr::NoSuchItem)?;
@@ -130,7 +130,7 @@ impl ItemLibrary {
             return Err(e);
         }
 
-        Ok(node)
+        Ok((node, item))
     }
 
     pub fn get_item_data_str(&mut self, id: &str) -> Option<Box<dyn ItemInstanceDataObject>> {

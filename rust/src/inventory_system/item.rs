@@ -5,7 +5,7 @@ use godot::{
     prelude::*,
 };
 
-use crate::inventory_system::ItemInstanceData;
+use crate::{GlobalSingleton, inventory_system::ItemInstanceData};
 
 pub trait ItemInstance {}
 
@@ -94,17 +94,48 @@ impl INode3D for BasicGun3D {
         if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
             if event.is_pressed() {
                 let counter = self.counter;
-                godot_print!("{counter}");
+                // godot_print!("{counter}");
 
                 self.counter += 1;
+
+                self.fire();
             }
         }
+    }
+
+    fn ready(&mut self) {
+        godot_print!("Gun ready");
     }
 }
 
 impl ItemInstance for BasicGun3D {}
 
-impl BasicGun3D {}
+impl BasicGun3D {
+    fn fire(&mut self) {
+        let mut global = GlobalSingleton::singleton();
+        let mut proj_node = match global.bind_mut().get_projectiles_node() {
+            Some(node) => node,
+            None => return,
+        };
+        let proj_lib = match global.bind_mut().get_projectile_lib() {
+            Some(lib) => lib,
+            None => return,
+        };
+        let (node, res) = match proj_lib
+            .bind()
+            .get_projectile_node(&StringName::from_str("test_projectile").unwrap())
+        {
+            Ok(n) => n,
+            Err(_e) => return,
+        };
+
+        proj_node.bind_mut().register_projectile(
+            node.clone(),
+            res.bind()._get_lifetime(),
+            self.base().get_global_transform(),
+        );
+    }
+}
 
 pub struct BasicGunInstanceData {
     counter: i32,

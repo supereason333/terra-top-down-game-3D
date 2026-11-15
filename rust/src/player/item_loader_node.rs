@@ -30,7 +30,7 @@ impl INode3D for ItemHolder {
             Some(data) => data,
             None => return,
         };
-        let node = match lib.get_item_node(ins_data.as_ref()) {
+        let (node, _resource) = match lib.get_item_node(ins_data.as_ref()) {
             Ok(node) => node,
             Err(e) => {
                 godot_print!("Item loader cannot get item node {:?}", e);

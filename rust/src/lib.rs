@@ -101,6 +101,17 @@ impl GlobalSingleton {
         }
     }
 
+    pub fn get_projectile_lib(&mut self) -> Option<Gd<ProjectileLibrary>> {
+        if !self.initialized {
+            self.initialize();
+        }
+
+        match &self.projectile_lib {
+            Some(lib) => Some(lib.clone()),
+            None => None,
+        }
+    }
+
     pub fn set_world_node(&mut self, mut world: Gd<WorldNode>) {
         world
             .clone()
