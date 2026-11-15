@@ -21,6 +21,8 @@ stretch = true
 stretch_shrink = 3
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1163129408]
+handle_input_locally = false
 size = Vector2i(640, 360)
+render_target_update_mode = 4
 
 [node name="World" parent="SubViewportContainer/SubViewport" unique_id=93226633 instance=ExtResource("1_ig7tw")]

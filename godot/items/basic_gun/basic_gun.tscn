@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bmh20qjbsmvyr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brone"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qxykr"]
+material = SubResource("StandardMaterial3D_brone")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="BasicGun" type="BasicGun3D" unique_id=1640951218]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1581695599]
+mesh = SubResource("BoxMesh_qxykr")

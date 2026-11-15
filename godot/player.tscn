@@ -32,7 +32,12 @@ mesh = SubResource("CapsuleMesh_gv5m4")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="PlayerRotate" unique_id=184035690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.32264495)
+visible = false
 mesh = SubResource("BoxMesh_4flbx")
+
+[node name="ItemHolder" type="ItemHolder" parent="PlayerRotate" unique_id=959679838]
+item = &"basic_gun"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.32221025)
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1974414955]
 
@@ -42,5 +47,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [connection signal="position_changed" from="UI/MouseTracker" to="PlayerRotate" method="_on_mouse_tracker_position_changed"]

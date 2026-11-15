@@ -1,3 +1,13 @@
 [gd_scene format=3 uid="uid://o1jtwt33aoos"]
 
-[node name="TestItem" type="Node3D" unique_id=1486847802]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brone"]
+albedo_color = Color(0.8745098, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_brone"]
+material = SubResource("StandardMaterial3D_brone")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="TestItem" type="TestItem3D" unique_id=919688526]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=646461555]
+mesh = SubResource("BoxMesh_brone")

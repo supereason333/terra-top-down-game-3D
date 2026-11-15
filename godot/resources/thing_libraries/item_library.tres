@@ -1,0 +1,17 @@
+[gd_resource type="ItemLibrary" format=3 uid="uid://jcn0k3nn4nnn"]
+
+[ext_resource type="PackedScene" uid="uid://o1jtwt33aoos" path="res://items/test_item/test_item.tscn" id="1_tllll"]
+[ext_resource type="PackedScene" uid="uid://bmh20qjbsmvyr" path="res://items/basic_gun/basic_gun.tscn" id="2_mavsd"]
+
+[sub_resource type="ItemDefinitionResource" id="ItemDefinitionResource_tllll"]
+display_name = "Test Item"
+id = &"test_item"
+item_scene = ExtResource("1_tllll")
+
+[sub_resource type="ItemDefinitionResource" id="ItemDefinitionResource_mukbh"]
+display_name = "Basic Gun"
+id = &"basic_gun"
+item_scene = ExtResource("2_mavsd")
+
+[resource]
+lib = Array[ItemDefinitionResource]([SubResource("ItemDefinitionResource_tllll"), SubResource("ItemDefinitionResource_mukbh")])

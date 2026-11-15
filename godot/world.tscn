@@ -82,7 +82,12 @@ points = PackedVector3Array(5, 1.5, 0.1, 5, 1.5, -0.1, -5, 1.5, 0.1, 5, -1.5, 0.
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ic0uy"]
 points = PackedVector3Array(5, 1.5, 0.1, 5, 1.5, -0.1, -5, 1.5, 0.1, 5, -1.5, 0.1, 5, -1.5, -0.1, -5, 1.5, -0.1, -5, -1.5, 0.1, -5, -1.5, -0.1)
 
-[node name="World" type="Node3D" unique_id=93226633]
+[node name="World" type="WorldNode" unique_id=698575752 node_paths=PackedStringArray("projectiles_node")]
+projectiles_node = NodePath("Projectiles")
+
+[node name="Projectiles" type="ProjectilesNode" parent="." unique_id=934195578]
+unique_name_in_owner = true
+transform = Transform3D(1, -1.4901161e-08, -1.4901161e-08, -1.4901161e-08, 1, -2.9802322e-08, -1.4901161e-08, 0, 1, 0, 0, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=728702469]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
@@ -109,6 +114,7 @@ shape = SubResource("WorldBoundaryShape3D_f3sb7")
 [node name="FollowCamera" type="FollowCamera" parent="." unique_id=1366804702 node_paths=PackedStringArray("target")]
 target = NodePath("../Player")
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.2249007, 0)
+current = true
 size = 8.944
 
 [node name="Player" parent="." unique_id=1046229950 instance=ExtResource("1_f3sb7")]

@@ -1,0 +1,12 @@
+[gd_resource type="ProjectileLibrary" format=3 uid="uid://dsanjnuyf4s5l"]
+
+[ext_resource type="PackedScene" uid="uid://ccpccyn7xr25n" path="res://projectiles/test_projectile.tscn" id="1_ofb0r"]
+
+[sub_resource type="ProjectileDefinitionResource" id="ProjectileDefinitionResource_ofb0r"]
+lifetime = 10.0
+display_name = "Projectile"
+id = &"test_projectile"
+item_scene = ExtResource("1_ofb0r")
+
+[resource]
+lib = Array[ProjectileDefinitionResource]([SubResource("ProjectileDefinitionResource_ofb0r")])
