@@ -14,7 +14,6 @@ type Factory = fn() -> Box<dyn ItemInstanceDataObject>;
 
 #[derive(Debug)]
 pub enum ItemLibraryErr {
-    InitilizeError,
     NoSuchItem,
     NoScene,
     WrongNodeType,
@@ -57,7 +56,7 @@ impl ItemLibrary {
         for item in self.lib.iter_shared() {
             let id = item.bind().id.clone();
             if self.lookup.get(&id).is_some() {
-                godot_print!("Two items share the same name! {id}");
+                godot_print!("Two items share the same id: {id}");
                 continue;
             }
             self.lookup.insert(id, item);

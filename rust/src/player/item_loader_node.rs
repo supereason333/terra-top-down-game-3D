@@ -1,8 +1,7 @@
 use godot::prelude::*;
 
 use crate::GlobalSingleton;
-use crate::inventory_system::item::{TestItem3D, TestItemInstanceData};
-use crate::inventory_system::{ItemInstanceData, ItemInstanceDataObject};
+use crate::inventory_system::ItemInstanceDataObject;
 
 #[derive(GodotClass)]
 #[class(init, base=Node3D)]

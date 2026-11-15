@@ -93,7 +93,10 @@ impl INode3D for BasicGun3D {
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
             if event.is_pressed() {
-                godot_print!("Shoot");
+                let counter = self.counter;
+                godot_print!("{counter}");
+
+                self.counter += 1;
             }
         }
     }
