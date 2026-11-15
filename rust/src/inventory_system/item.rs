@@ -25,14 +25,6 @@ impl INode3D for TestItem3D {
             base: base,
         }
     }
-
-    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
-            if event.is_pressed() {
-                godot_print!("Pressed");
-            }
-        }
-    }
 }
 
 impl ItemInstance for TestItem3D {}
@@ -41,10 +33,19 @@ impl TestItem3D {
     fn up_counter(&mut self) {
         self.counter += 1;
     }
+
+    fn recieve_input(&mut self, event: Gd<InputEvent>) {
+        if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
+            if event.is_pressed() {
+                godot_print!("Pressed");
+            }
+        }
+    }
 }
 
 pub struct TestItemInstanceData {
     counter: i32,
+    item: Option<Gd<TestItem3D>>,
 }
 
 impl ItemInstanceData for TestItemInstanceData {
@@ -52,17 +53,22 @@ impl ItemInstanceData for TestItemInstanceData {
     const ITEM_ID: &str = "test_item";
 
     fn new() -> Self {
-        Self { counter: 0 }
-    }
-
-    fn new_from_item(item: Gd<Self::ItemNode>) -> Self {
-        let ins = item.bind();
         Self {
-            counter: ins.counter,
+            counter: 0,
+            item: None,
         }
     }
 
-    fn load_into_item(&self, mut item: Gd<Self::ItemNode>) {
+    fn new_from_item(item: Gd<Self::ItemNode>) -> Self {
+        let i = item.clone();
+        let ins = item.bind();
+        Self {
+            counter: ins.counter,
+            item: Some(i),
+        }
+    }
+
+    fn load_into_item(&mut self, mut item: Gd<Self::ItemNode>) {
         let mut ins = item.bind_mut();
         ins.counter = self.counter;
     }
@@ -71,6 +77,8 @@ impl ItemInstanceData for TestItemInstanceData {
         let ins = item.bind();
         self.counter = ins.counter;
     }
+
+    fn pass_input_to(&self, event: Gd<InputEvent>) {}
 }
 
 #[derive(GodotClass)]
@@ -90,19 +98,6 @@ impl INode3D for BasicGun3D {
         }
     }
 
-    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
-            if event.is_pressed() {
-                let counter = self.counter;
-                // godot_print!("{counter}");
-
-                self.counter += 1;
-
-                self.fire();
-            }
-        }
-    }
-
     fn ready(&mut self) {
         godot_print!("Gun ready");
     }
@@ -111,6 +106,16 @@ impl INode3D for BasicGun3D {
 impl ItemInstance for BasicGun3D {}
 
 impl BasicGun3D {
+    pub fn recieve_input(&mut self, event: Gd<InputEvent>) {
+        if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
+            if event.is_pressed() {
+                self.counter += 1;
+
+                self.fire();
+            }
+        }
+    }
+
     fn fire(&mut self) {
         let mut global = GlobalSingleton::singleton();
         let mut proj_node = match global.bind_mut().get_projectiles_node() {
@@ -139,6 +144,7 @@ impl BasicGun3D {
 
 pub struct BasicGunInstanceData {
     counter: i32,
+    item: Option<Gd<BasicGun3D>>,
 }
 
 impl ItemInstanceData for BasicGunInstanceData {
@@ -146,23 +152,36 @@ impl ItemInstanceData for BasicGunInstanceData {
     const ITEM_ID: &str = "basic_gun";
 
     fn new() -> Self {
-        Self { counter: 0 }
-    }
-
-    fn new_from_item(item: Gd<Self::ItemNode>) -> Self {
-        let ins = item.bind();
         Self {
-            counter: ins.counter,
+            counter: 0,
+            item: None,
         }
     }
 
-    fn load_into_item(&self, mut item: Gd<Self::ItemNode>) {
+    fn new_from_item(item: Gd<Self::ItemNode>) -> Self {
+        let i = item.clone();
+        let ins = item.bind();
+        Self {
+            counter: ins.counter,
+            item: Some(i),
+        }
+    }
+
+    fn load_into_item(&mut self, mut item: Gd<Self::ItemNode>) {
+        self.item = Some(item.clone());
         let mut ins = item.bind_mut();
         ins.counter = self.counter;
     }
 
     fn take_from_item(&mut self, item: Gd<Self::ItemNode>) {
+        self.item = None;
         let ins = item.bind();
         self.counter = ins.counter;
+    }
+
+    fn pass_input_to(&self, event: Gd<InputEvent>) {
+        if let Some(mut item) = self.item.clone() {
+            item.bind_mut().recieve_input(event);
+        }
     }
 }

@@ -3,7 +3,7 @@ pub mod item;
 use std::str::FromStr;
 use std::{any::Any, collections::HashMap};
 
-use godot::classes::Node3D;
+use godot::classes::{InputEvent, Node3D};
 use godot::obj::Bounds;
 use godot::obj::bounds::DeclUser;
 use godot::prelude::*;
@@ -111,7 +111,7 @@ impl ItemLibrary {
 
     pub fn get_item_node(
         &self,
-        ins_data: &dyn ItemInstanceDataObject,
+        ins_data: &mut dyn ItemInstanceDataObject,
     ) -> Result<(Gd<Node3D>, Gd<ItemDefinitionResource>), ItemLibraryErr> {
         let item = self
             .get_item(&StringName::from(ins_data.item_id()))
@@ -196,15 +196,13 @@ pub trait ItemInstanceData: Sized {
     fn new_from_item(item: Gd<Self::ItemNode>) -> Self;
 
     // when item is equipped, load data into item
-    fn load_into_item(&self, item: Gd<Self::ItemNode>);
+    fn load_into_item(&mut self, item: Gd<Self::ItemNode>);
 
     // when item is unequipped, take data from item
     fn take_from_item(&mut self, item: Gd<Self::ItemNode>);
 
-    // idk
-    // fn try_id() -> Result<StringName, ()> {
-    //     StringName::from_str(Self::ITEM_ID).map_err(|_| ())
-    // }
+    // passes input to be able to emulate input so entities can use the items
+    fn pass_input_to(&self, event: Gd<InputEvent>);
 }
 
 // wrapper for the ItemInstanceData thats type erased
@@ -212,8 +210,9 @@ pub trait ItemInstanceData: Sized {
 // via a identifier
 pub trait ItemInstanceDataObject: Any {
     fn item_id(&self) -> &'static str;
-    fn load_into(&self, node: Gd<Node3D>) -> Result<(), ItemLibraryErr>;
+    fn load_into(&mut self, node: Gd<Node3D>) -> Result<(), ItemLibraryErr>;
     fn take_from(&mut self, node: Gd<Node3D>) -> Result<(), ItemLibraryErr>;
+    fn pass_input(&self, event: Gd<InputEvent>);
     fn as_any(&self) -> &dyn Any;
     fn as_any_mut(&mut self) -> &mut dyn Any;
 }
@@ -224,7 +223,7 @@ impl<I: ItemInstanceData + 'static> ItemInstanceDataObject for I {
         I::ITEM_ID
     }
 
-    fn load_into(&self, node: Gd<Node3D>) -> Result<(), ItemLibraryErr> {
+    fn load_into(&mut self, node: Gd<Node3D>) -> Result<(), ItemLibraryErr> {
         let node = node
             .try_cast::<I::ItemNode>()
             .map_err(|_| ItemLibraryErr::WrongNodeType)?;
@@ -238,6 +237,10 @@ impl<I: ItemInstanceData + 'static> ItemInstanceDataObject for I {
             .map_err(|_| ItemLibraryErr::WrongNodeType)?;
         self.take_from_item(node);
         Ok(())
+    }
+
+    fn pass_input(&self, event: Gd<InputEvent>) {
+        self.pass_input_to(event);
     }
 
     fn as_any(&self) -> &dyn Any {

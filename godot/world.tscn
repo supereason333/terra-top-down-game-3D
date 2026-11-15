@@ -231,4 +231,4 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 1
 shape = SubResource("ConvexPolygonShape3D_ic0uy")
 
 [node name="BasicEnemy" parent="." unique_id=217054001 instance=ExtResource("2_fj7yv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5973172, 2.7486377, 1.9233043)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5973172, 0.9794791, 1.9233043)

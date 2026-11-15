@@ -39,7 +39,7 @@ impl IRigidBody3D for TestEntity {
         let own_pos = self.base().get_global_position();
 
         let desired = match target {
-            Some(t) if (t - own_pos).length_squared() > 1.0 => {
+            Some(t) if (t - own_pos).length_squared() > 0.25 => {
                 (t - own_pos).normalized() * self.speed
             }
             Some(_) => {

@@ -1,3 +1,4 @@
+use godot::classes::InputEvent;
 use godot::prelude::*;
 
 use crate::GlobalSingleton;
@@ -26,11 +27,11 @@ impl INode3D for ItemHolder {
         };
         let mut lib = item_lib.bind_mut();
 
-        let ins_data = match lib.get_item_data(&self.item) {
+        let mut ins_data = match lib.get_item_data(&self.item) {
             Some(data) => data,
             None => return,
         };
-        let (node, _resource) = match lib.get_item_node(ins_data.as_ref()) {
+        let (node, _resource) = match lib.get_item_node(ins_data.as_mut()) {
             Ok(node) => node,
             Err(e) => {
                 godot_print!("Item loader cannot get item node {:?}", e);
@@ -42,5 +43,11 @@ impl INode3D for ItemHolder {
 
         self.ins_data = Some(ins_data);
         self.node_ref = Some(node);
+    }
+
+    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if let Some(item) = &self.ins_data {
+            item.as_ref().pass_input(event);
+        }
     }
 }
