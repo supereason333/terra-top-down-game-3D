@@ -20,7 +20,7 @@ impl INode for HealthNode {
 
 #[godot_api]
 impl HealthNode {
-    fn update_health(&mut self, dmg: f32) {
+    pub fn update_health(&mut self, dmg: f32) {
         self.health += dmg;
         if self.health < 0.0 {
             self.signals().death().emit();
@@ -28,6 +28,14 @@ impl HealthNode {
         self.health = self.health.clamp(0.0, self.max_health);
         let health = self.health;
         self.signals().health_changed().emit(health);
+    }
+
+    pub fn max_health(&self) -> f32 {
+        self.max_health
+    }
+
+    pub fn health(&self) -> f32 {
+        self.health
     }
 
     #[signal]

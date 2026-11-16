@@ -1,5 +1,7 @@
 use godot::{classes::Area3D, prelude::*};
 
+use crate::{other_stuff::health_node::HealthNode, player::player_node::Player};
+
 #[derive(GodotClass)]
 #[class(init, base=Node3D)]
 struct TestProjectile3D {
@@ -28,7 +30,18 @@ impl INode3D for TestProjectile3D {
 #[godot_api]
 impl TestProjectile3D {
     #[func]
-    fn _on_body_entered(&mut self, _body: Gd<Node3D>) {
+    fn _on_body_entered(&mut self, mut body: Gd<Node3D>) {
         self.base_mut().queue_free();
+
+        if let Ok(player) = body.clone().try_cast::<Player>() {
+            if let Some(mut health) = player.bind().get_health() {
+                health.bind_mut().update_health(-10.0);
+            }
+        } else if body.has_method("get_health") {
+            let health = body.call("get_health", &[]);
+            if let Ok(mut health) = health.try_to::<Gd<HealthNode>>() {
+                health.bind_mut().update_health(-10.0);
+            }
+        }
     }
 }

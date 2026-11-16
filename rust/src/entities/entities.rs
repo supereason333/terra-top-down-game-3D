@@ -1,5 +1,5 @@
 use godot::{
-    classes::{IRigidBody3D, RayCast3D, RigidBody3D},
+    classes::{IRigidBody3D, RayCast3D, RigidBody3D, Timer},
     prelude::*,
 };
 
@@ -16,6 +16,10 @@ pub struct TestEntity {
     raycast: Option<Gd<RayCast3D>>,
     #[export]
     health_node: Option<Gd<HealthNode>>,
+    #[export]
+    fire_timer: Option<Gd<Timer>>,
+    #[export]
+    rotate_node: Option<Gd<Node3D>>,
 
     #[export]
     speed: f32,
@@ -39,7 +43,7 @@ impl IRigidBody3D for TestEntity {
         let own_pos = self.base().get_global_position();
 
         let desired = match target {
-            Some(t) if (t - own_pos).length_squared() > 0.25 => {
+            Some(t) if (t - own_pos).length_squared() > 4.0 => {
                 (t - own_pos).normalized() * self.speed
             }
             Some(_) => {
@@ -60,6 +64,35 @@ impl IRigidBody3D for TestEntity {
             z: force.z,
         };
         self.base_mut().apply_central_force(force);
+
+        let sees_player = if let Some(ray) = &self.raycast {
+            ray.get_collider()
+                .is_some_and(|c| c.try_cast::<Player>().is_ok())
+        } else {
+            false
+        };
+
+        if sees_player {
+            if let Some(mut rotate) = self.rotate_node.clone() {
+                match target {
+                    Some(t) => rotate.set_rotation(Vector3 {
+                        x: 0.0,
+                        y: -(t - own_pos).signed_angle_to(Vector3::FORWARD, Vector3::UP),
+                        z: 0.0,
+                    }),
+                    None => {}
+                }
+            }
+        }
+
+        if let Some(mut timer) = self.fire_timer.clone() {
+            let timer_stopped = timer.is_stopped();
+            if timer_stopped && sees_player {
+                timer.start();
+            } else if !timer_stopped && !sees_player {
+                timer.stop();
+            }
+        }
     }
 }
 
@@ -81,6 +114,7 @@ impl TestEntity {
         }
     }
 
+    #[func]
     pub fn get_health(&self) -> Option<Gd<HealthNode>> {
         self.health_node.clone()
     }

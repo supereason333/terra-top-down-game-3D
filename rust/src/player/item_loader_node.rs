@@ -1,4 +1,5 @@
-use godot::classes::InputEvent;
+use godot::classes::{InputEvent, InputEventMouseButton};
+use godot::global::{MouseButton, MouseButtonMask};
 use godot::prelude::*;
 
 use crate::GlobalSingleton;
@@ -9,6 +10,8 @@ use crate::inventory_system::ItemInstanceDataObject;
 struct ItemHolder {
     #[export]
     item: StringName,
+    #[export]
+    player: bool,
 
     node_ref: Option<Gd<Node3D>>,
     ins_data: Option<Box<dyn ItemInstanceDataObject>>,
@@ -46,8 +49,35 @@ impl INode3D for ItemHolder {
     }
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if !self.player {
+            return;
+        }
+        self.pass_event(event);
+        // if let Some(item) = &self.ins_data {
+        //     item.as_ref().pass_input(event);
+        // }
+    }
+}
+
+#[godot_api]
+impl ItemHolder {
+    #[func]
+    fn pass_event(&mut self, event: Gd<InputEvent>) {
         if let Some(item) = &self.ins_data {
             item.as_ref().pass_input(event);
         }
+    }
+
+    #[func]
+    fn pass_lmb(&mut self, pressed: bool) {
+        let mut event = InputEventMouseButton::new_gd();
+        event.set_button_index(MouseButton::LEFT);
+        event.set_pressed(pressed);
+        event.set_button_mask(if pressed {
+            MouseButtonMask::LEFT
+        } else {
+            MouseButtonMask::default()
+        });
+        self.pass_event(event.upcast::<InputEvent>());
     }
 }

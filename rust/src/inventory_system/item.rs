@@ -97,10 +97,6 @@ impl INode3D for BasicGun3D {
             base: base,
         }
     }
-
-    fn ready(&mut self) {
-        godot_print!("Gun ready");
-    }
 }
 
 impl ItemInstance for BasicGun3D {}
@@ -110,7 +106,6 @@ impl BasicGun3D {
         if let Ok(event) = event.try_cast::<InputEventMouseButton>() {
             if event.is_pressed() {
                 self.counter += 1;
-
                 self.fire();
             }
         }

@@ -46,6 +46,7 @@ mesh = SubResource("BoxMesh_4flbx")
 
 [node name="ItemHolder" type="ItemHolder" parent="PlayerRotate" unique_id=959679838]
 item = &"basic_gun"
+player = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3495109)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="PlayerRotate" unique_id=1675890331]
@@ -67,6 +68,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
+[node name="UI" type="Control" parent="UI" unique_id=252845776]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="HealthBar" type="HealthBar" parent="UI/UI" unique_id=1063508584]
+layout_mode = 1
+offset_right = 434.0
+offset_bottom = 27.0
+
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=909887727]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8083663, 0)
 light_color = Color(1, 1, 0.9490196, 1)
@@ -75,4 +85,5 @@ shadow_enabled = true
 omni_range = 7.272
 omni_attenuation = 1.801
 
+[connection signal="health_changed" from="HealthNode" to="UI/UI/HealthBar" method="on_health_changed"]
 [connection signal="position_changed" from="UI/MouseTracker" to="PlayerRotate" method="_on_mouse_tracker_position_changed"]

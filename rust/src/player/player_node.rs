@@ -72,7 +72,7 @@ impl IRigidBody3D for Player {
 
 #[godot_api]
 impl Player {
-    fn get_health(&mut self) -> Option<Gd<HealthNode>> {
+    pub fn get_health(&self) -> Option<Gd<HealthNode>> {
         match self.health_node.clone() {
             Some(node) => {
                 if node.is_instance_valid() {
