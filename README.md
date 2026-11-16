@@ -1,6 +1,6 @@
 # top down shooter 3D
 
-Prototype rougelike extraction shooter esque game, kind of an upgrade of the prior 2d one. The idea is an extraction shooter but its procedually generated. You get resources and stuff exploring the levels and go to the next and every few levels there will be a bossfight until the end.
+Prototype rougelike extraction shooter esque game, kind of an upgrade of the prior 2d one. The *idea* is an extraction shooter but its procedually generated. You get resources and stuff exploring the levels and go to the next and every few levels there will be a bossfight until the end.
 
 This is made for hack club's Terra, if like by the end of this I actually quite like the game I might actually do something with it (hopefully).
 
