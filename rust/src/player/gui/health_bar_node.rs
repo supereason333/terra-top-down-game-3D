@@ -26,6 +26,11 @@ impl IProgressBar for HealthBar {
         let mut b = self.base_mut();
         b.set_max(health.bind().max_health() as f64);
         b.set_value(health.bind().health() as f64);
+        drop(b);
+        health
+            .signals()
+            .tree_entered()
+            .connect_other(&self.to_gd(), Self::on_health_ready);
     }
 }
 
@@ -34,5 +39,14 @@ impl HealthBar {
     #[func]
     fn on_health_changed(&mut self, new: f32) {
         self.base_mut().set_value(new as f64);
+    }
+
+    #[func]
+    fn on_health_ready(&mut self) {
+        if let Some(health) = self.health.clone() {
+            let mut b = self.base_mut();
+            b.set_max(health.bind().max_health() as f64);
+            b.set_value(health.bind().health() as f64);
+        }
     }
 }

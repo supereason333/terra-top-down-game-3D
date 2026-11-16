@@ -1,4 +1,4 @@
-use godot::prelude::*;
+use godot::{global::is_zero_approx, prelude::*};
 
 #[derive(GodotClass)]
 #[class(init, base=Node)]
@@ -16,13 +16,17 @@ impl INode for HealthNode {
     fn ready(&mut self) {
         self.health = self.max_health;
     }
+    fn process(&mut self, dt: f32) {
+        self.update_health(0.5 * dt);
+    }
 }
 
 #[godot_api]
 impl HealthNode {
     pub fn update_health(&mut self, dmg: f32) {
         self.health += dmg;
-        if self.health < 0.0 {
+        let health = self.health;
+        if health < 0.0 || is_zero_approx(health as f64) {
             self.signals().death().emit();
         }
         self.health = self.health.clamp(0.0, self.max_health);
